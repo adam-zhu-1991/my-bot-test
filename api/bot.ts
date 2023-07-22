@@ -20,7 +20,7 @@ bot.command("start", async (ctx) => {
   await ctx.reply("Check out this menu:", { reply_markup: menu });
 });
 
-const webhook = process.env.WEBHOOK;
-if (!webhook) throw new Error("WEBHOOK is unset");
+// const webhook = process.env.WEBHOOK;
+// if (!webhook) throw new Error("WEBHOOK is unset");
 
-bot.api.setWebhook(webhook);
+// bot.api.setWebhook(webhook);
