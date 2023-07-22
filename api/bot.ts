@@ -89,7 +89,7 @@ foodMenu.dynamic(() => {
     range
       .submenu(
         { text: dish.name, payload: dish.id }, // label and payload
-        'dish', // navigation target menu
+        'dish-menu', // navigation target menu
         ctx =>
           ctx.editMessageText(dishText(dish.name), {
             parse_mode: 'HTML',
