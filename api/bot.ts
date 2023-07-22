@@ -81,8 +81,8 @@ bot.use(conversations());
 
 async function greeting(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("你好！你叫什么名字？");
-  const { message } = await conversation.wait();
-  await ctx.reply(`欢迎加入聊天, ${message}!`);
+  const { msg } = await conversation.waitFor(":text");
+  await ctx.reply(`欢迎加入聊天, ${msg.text}!`);
 }
 
 bot.use(createConversation(greeting));
