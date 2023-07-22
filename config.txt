@@ -2,4 +2,4 @@
 https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=<HOST_URL>
 
 # Set webhook url
-https://api.telegram.org/bot6648090169:AAFQ0TghXmmAxKf0iby-qmFQwipGGcUXonA/setWebhook?url=https://my-bot-test-adam-zhu-1991.vercel.app/api/bot
+https://api.telegram.org/bot6648090169:AAFQ0TghXmmAxKf0iby-qmFQwipGGcUXonA/setWebhook?url=https://my-bot-test-phi.vercel.app/api/bot
