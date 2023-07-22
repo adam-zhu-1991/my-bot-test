@@ -1,0 +1,5 @@
+# Template
+https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=<HOST_URL>
+
+# Set webhook url
+https://api.telegram.org/bot6648090169:AAFQ0TghXmmAxKf0iby-qmFQwipGGcUXonA/setWebhook?url=https://my-bot-test-peach.vercel.app/api/bot

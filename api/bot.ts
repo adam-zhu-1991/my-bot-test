@@ -1,19 +1,22 @@
 import { Bot } from "grammy";
 import { Menu } from "@grammyjs/menu";
 
-// 创建一个 bot。
-const bot = new Bot("");
+const token = process.env.BOT_TOKEN;
+if (!token) throw new Error("BOT_TOKEN is unset");
 
-// 创建一个简单的菜单。
+// create a bot
+const bot = new Bot(token);
+
+// create a menu
 const menu = new Menu("my-menu-identifier")
   .text("A", (ctx) => ctx.reply("You pressed A!")).row()
   .text("B", (ctx) => ctx.reply("You pressed B!"));
 
-// 使其具有互动性。
+// apply menu
 bot.use(menu);
 
 bot.command("start", async (ctx) => {
-  // 发送菜单。
+  // send menu
   await ctx.reply("Check out this menu:", { reply_markup: menu });
 });
 
