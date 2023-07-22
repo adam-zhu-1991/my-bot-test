@@ -3,13 +3,23 @@ import { Bot, webhookCallback } from "grammy";
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
+// create a bot
 const bot = new Bot(token);
 
-export default webhookCallback(bot, "http");
+// create a menu
+const menu = new Menu("my-menu-identifier")
+  .text("A", (ctx) => ctx.reply("You pressed A!")).row()
+  .text("B", (ctx) => ctx.reply("You pressed B!"));
 
-// import { Bot } from 'grammy';
+// apply menu
+bot.use(menu);
 
-// const { BOT_TOKEN, WEBHOOK } = process.env;
-// const bot = new Bot(BOT_TOKEN);
+bot.command("start", async (ctx) => {
+  // send menu
+  await ctx.reply("Check out this menu:", { reply_markup: menu });
+});
 
-// bot.api.setWebhook(WEBHOOK);
+const webhook = process.env.WEBHOOK;
+if (!webhook) throw new Error("WEBHOOK is unset");
+
+export default webhookCallback(bot, webhook);
