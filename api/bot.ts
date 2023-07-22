@@ -117,7 +117,14 @@ async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
     await checkWalletAddress(conversation, ctx);
   } else {
     ctx.session.walletAddress = walletAddress || '';
+    await createWalletSuccess(conversation, ctx);
   }
+}
+
+async function createWalletSuccess(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("<b>Hi!</b> <i>Welcome</i> to <a href=\"https://grammy.dev\">grammY</a>.", {
+    parse_mode: "HTML"
+  });
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
