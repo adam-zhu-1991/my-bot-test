@@ -1,15 +1,15 @@
-// import { Bot, webhookCallback } from "grammy";
+import { Bot, webhookCallback } from "grammy";
 
-// const token = process.env.BOT_TOKEN;
-// if (!token) throw new Error("BOT_TOKEN is unset");
+const token = process.env.BOT_TOKEN;
+if (!token) throw new Error("BOT_TOKEN is unset");
 
-// const bot = new Bot(token);
+const bot = new Bot(token);
 
-// export default webhookCallback(bot, "http");
+export default webhookCallback(bot, "http");
 
-import { Bot } from 'grammy';
+// import { Bot } from 'grammy';
 
-const { BOT_TOKEN, WEBHOOK } = process.env;
-const bot = new Bot(BOT_TOKEN);
+// const { BOT_TOKEN, WEBHOOK } = process.env;
+// const bot = new Bot(BOT_TOKEN);
 
-bot.api.setWebhook(WEBHOOK);
+// bot.api.setWebhook(WEBHOOK);

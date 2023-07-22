@@ -2,7 +2,7 @@
   "functions": {
     "api/bot.ts": {
       "memory": 1024,
-      "maxDuration": 100000000
+      "maxDuration": 30
     }
   }
 }
