@@ -53,6 +53,8 @@ interface MenuItem {
 
 interface SessionData {
   isSell: Boolean,
+  walletName: String,
+  walletAddress: String,
 };
 
 type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor;
@@ -72,25 +74,61 @@ const bot = new Bot<MyContext>(token);
 bot.use(
   session({
     initial(): SessionData {
-      return { isSell: false }
+      return { isSell: false, walletName: '', walletAddress: '' }
     },
   })
 );
 
 bot.use(conversations());
 
-async function greeting(conversation: MyConversation, ctx: MyContext) {
-  await ctx.reply("你好！你叫什么名字？");
+async function checkWalletName(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
-  await ctx.reply(`欢迎加入聊天, ${msg.text}!`);
+  const walletName = msg.text;
+  if (walletName.length === 0 || walletName.length > 8) {
+    await ctx.reply("This is not a valid wallet name, Name must be alphanumeric, 8 letters max.");
+    return { success: false };
+  }
+  return { walletName, success: true };
 }
 
-bot.use(createConversation(greeting));
+async function setWalletName(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
+  const { walletName, success } = await checkWalletName(conversation, ctx);
+  if (success) {
+    ctx.session.walletName = walletName || '';
+    await setWalletAddress(conversation, ctx);
+  }
+}
+
+async function checkWalletAddress(conversation: MyConversation, ctx: MyContext) {
+  const { msg } = await conversation.waitFor(":text");
+  const walletAddress = msg.text;
+  if (walletAddress.length === 0 || walletAddress.length !== 42) {
+    await ctx.reply("This is not a valid wallet address, Please try again.");
+    return { success: false };
+  }
+  return { walletAddress, success: true };
+}
+
+async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
+  const { walletAddress, success } = await checkWalletAddress(conversation, ctx);
+  if (!success) {
+    await checkWalletAddress(conversation, ctx);
+  }
+  ctx.session.walletAddress = walletAddress || '';
+}
+
+async function createWallet(conversation: MyConversation, ctx: MyContext) {
+  await setWalletName(conversation, ctx);
+}
+
+bot.use(createConversation(createWallet));
 
 const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add", async (ctx) => {
-    await ctx.conversation.enter("greeting");
+    await ctx.conversation.enter("createWallet");
   })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
