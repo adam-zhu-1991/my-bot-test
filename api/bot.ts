@@ -122,7 +122,8 @@ async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
 }
 
 async function createWalletSuccess(conversation: MyConversation, ctx: MyContext) {
-  await ctx.reply("<b>Hi!</b> <i>Welcome</i> to <a href=\"https://grammy.dev\">grammY</a>.", {
+  const message = `<div>✅Added ARB Wallet(💳${ctx.session.walletName})</div><span>${ctx.session.walletAddress}</span>`
+  await ctx.reply(message, {
     parse_mode: "HTML"
   });
 }
