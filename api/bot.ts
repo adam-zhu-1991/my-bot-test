@@ -81,40 +81,44 @@ bot.use(
 
 bot.use(conversations());
 
-async function checkWalletName(conversation: MyConversation, ctx: MyContext) {
+const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
+async function checkName(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
   const walletName = msg.text;
-  if (walletName.length === 0 || walletName.length > 8) {
+  const isLegal = nameRegExp.test(walletName);
+  if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
     await ctx.reply("This is not a valid wallet name, Name must be alphanumeric, 8 letters max.");
     return { success: false };
   }
   return { walletName, success: true };
 }
 
-async function setWalletName(conversation: MyConversation, ctx: MyContext) {
+async function setName(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
-  const { walletName, success } = await checkWalletName(conversation, ctx);
+  const { walletName, success } = await checkName(conversation, ctx);
   if (success) {
     ctx.session.walletName = walletName || '';
-    await setWalletAddress(conversation, ctx);
+    await setAddress(conversation, ctx);
   }
 }
 
-async function checkWalletAddress(conversation: MyConversation, ctx: MyContext) {
+const addressRegExp = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+async function checkAddress(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
   const walletAddress = msg.text;
-  if (walletAddress.length === 0 || walletAddress.length !== 42) {
+  const isLegal = addressRegExp.test(walletAddress);
+  if (walletAddress.length === 0 || walletAddress.length !== 42 || !isLegal) {
     await ctx.reply("This is not a valid wallet address, Please try again.");
     return { success: false };
   }
   return { walletAddress, success: true };
 }
 
-async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
+async function setAddress(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
-  const { walletAddress, success } = await checkWalletAddress(conversation, ctx);
+  const { walletAddress, success } = await checkAddress(conversation, ctx);
   if (!success) {
-    await checkWalletAddress(conversation, ctx);
+    await checkAddress(conversation, ctx);
   } else {
     ctx.session.walletAddress = walletAddress || '';
     await createWalletSuccess(conversation, ctx);
@@ -129,7 +133,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
-  await setWalletName(conversation, ctx);
+  await setName(conversation, ctx);
 }
 
 bot.use(createConversation(createWallet));
