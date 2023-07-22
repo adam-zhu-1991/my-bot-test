@@ -122,7 +122,7 @@ async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
 }
 
 async function createWalletSuccess(conversation: MyConversation, ctx: MyContext) {
-  const message = `✅Added ARB Wallet(💳${ctx.session.walletName})${ctx.session.walletAddress}`;
+  const message = `✅Added ARB Wallet(💳${ctx.session.walletName})\n${ctx.session.walletAddress}`;
   await ctx.reply(message, {
     parse_mode: "HTML"
   });
