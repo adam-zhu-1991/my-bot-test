@@ -24,7 +24,10 @@ const menu = new Menu("my-menu-identifier")
   }).row()
   .text(
     (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.01 ETH" : "Buy 0.01 ETH"}`, // 动态标签
-    (ctx) => ctx.reply(`Hello ${ctx.from.first_name}!`),
+    (ctx) => {
+      ctx.reply(`Hello ${ctx.from.first_name}!`);
+      ctx.menu.close();
+    },
   )
   .text(
     (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.05 ETH" : "Buy 0.05 ETH"}`, // 动态标签
