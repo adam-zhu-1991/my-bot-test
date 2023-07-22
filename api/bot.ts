@@ -1,5 +1,11 @@
 import { Bot, Context, session, SessionFlavor, webhookCallback } from "grammy";
 import { Menu, MenuRange } from "@grammyjs/menu";
+import {
+  type Conversation,
+  type ConversationFlavor,
+  conversations,
+  createConversation,
+} from "@grammyjs/conversations";
 
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -37,19 +43,20 @@ if (!token) throw new Error("BOT_TOKEN is unset");
 enum MenuType {
   Buy = 1,
   Sell = 2,
-}
+};
 
 interface MenuItem {
   id: string,
   text: string,
   type: MenuType,
-}
+};
 
 interface SessionData {
   isSell: Boolean,
-}
+};
 
-type MyContext = Context & SessionFlavor<SessionData>
+type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor;
+type MyConversation = Conversation<MyContext>;
 
 const dynamicMenu: MenuItem[] = [
   { id: 'buy001ETH', text: 'Buy 0.01', type: MenuType.Buy },
@@ -57,7 +64,7 @@ const dynamicMenu: MenuItem[] = [
   { id: 'sellAllETH', text: 'Sell All', type: MenuType.Sell },
   { id: 'sell001ETH', text: 'Sell 0.01', type: MenuType.Sell },
   { id: 'sell005ETH', text: 'Sell 0.05', type: MenuType.Sell },
-]
+];
 
 // create a bot
 const bot = new Bot<MyContext>(token);
@@ -68,11 +75,23 @@ bot.use(
       return { isSell: false }
     },
   })
-)
+);
+
+bot.use(conversations());
+
+async function greeting(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("你好！你叫什么名字？");
+  const { message } = await conversation.wait();
+  await ctx.reply(`欢迎加入聊天, ${message}!`);
+}
+
+bot.use(createConversation(greeting));
 
 const testMenu = new Menu<MyContext>('test-menu');
 testMenu
-  .text("Add", (ctx) => ctx.reply("You pressed Add!"))
+  .text("Add", async (ctx) => {
+    await ctx.conversation.enter("greeting");
+  })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
     ctx.menu.update();
