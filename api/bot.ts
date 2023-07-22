@@ -1,4 +1,4 @@
-import { Bot } from "grammy";
+import { Bot, webhookCallback } from "grammy";
 import { Menu } from "@grammyjs/menu";
 
 const token = process.env.BOT_TOKEN;
@@ -20,7 +20,4 @@ bot.command("start", async (ctx) => {
   await ctx.reply("Check out this menu:", { reply_markup: menu });
 });
 
-const webhook = process.env.WEBHOOK;
-if (!webhook) throw new Error("WEBHOOK is unset");
-
-bot.api.setWebhook(webhook);
+export default webhookCallback(bot, 'http')
