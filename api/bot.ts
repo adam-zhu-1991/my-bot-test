@@ -23,10 +23,13 @@ const menu = new Menu("my-menu-identifier")
     ctx.menu.update();
   }).row()
   .text(
-    (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.01" : "Buy 0.01"}`, // 动态标签
+    (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.01 ETH" : "Buy 0.01 ETH"}`, // 动态标签
     (ctx) => ctx.reply(`Hello ${ctx.from.first_name}!`),
   )
-  .text("Buy 0.05", (ctx) => ctx.reply("You pressed B 0.05!")).row();
+  .text(
+    (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.05 ETH" : "Buy 0.05 ETH"}`, // 动态标签
+    (ctx) => ctx.reply(`Hello ${ctx.from.first_name}!`),
+  ).row();
 
 // apply menu
 bot.use(menu);
