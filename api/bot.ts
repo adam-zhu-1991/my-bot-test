@@ -10,37 +10,8 @@ import {
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
-// create a menu
-// const switches = new Set<number>();
-
-// function toggleSwitches(id: number) {
-//   if (switches.has(id)) switches.delete(id);
-//   else switches.add(id);
-// }
-
-// const menu = new Menu("my-menu-identifier")
-//   .text("Add", (ctx) => ctx.reply("You pressed Add!"))
-//   .text("Switch", (ctx) => {
-//     toggleSwitches(ctx.from.id);
-//     ctx.menu.update();
-//   }).row()
-//   .text(
-//     (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.01 ETH" : "Buy 0.01 ETH"}`, // 动态标签
-//     (ctx) => {
-//       ctx.reply(`Hello ${ctx.from.first_name}!`); 
-//     },
-//   )
-//   .text(
-//     (ctx) => `${ctx.from && switches.has(ctx.from.id) ? "Sell 0.05 ETH" : "Buy 0.05 ETH"}`, // 动态标签
-//     (ctx) => {
-//       ctx.reply(`Hello ${ctx.from.first_name}!`);
-//     },
-//   ).row();
-
-// apply menu
-// bot.use(menu);
-
 enum MenuType {
+  Unspecified = 0,
   Buy = 1,
   Sell = 2,
 };
@@ -55,6 +26,7 @@ interface SessionData {
   isSell: Boolean,
   walletName: String,
   walletAddress: String,
+  walletAdded: Boolean,
 };
 
 type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor;
@@ -68,13 +40,19 @@ const dynamicMenu: MenuItem[] = [
   { id: 'sell005ETH', text: 'Sell 0.05', type: MenuType.Sell },
 ];
 
+const dynamicMenu2: MenuItem[] = [
+  { id: 'walletSettings', text: '', type: MenuType.Unspecified },
+  { id: 'walletRename', text: 'Rename', type: MenuType.Unspecified },
+  { id: 'walletDelete', text: '❌', type: MenuType.Unspecified },
+];
+
 // create a bot
 const bot = new Bot<MyContext>(token);
 
 bot.use(
   session({
     initial(): SessionData {
-      return { isSell: false, walletName: '', walletAddress: '' }
+      return { isSell: false, walletName: '', walletAddress: '', walletAdded: false }
     },
   })
 );
@@ -121,6 +99,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
     await setAddress(conversation, ctx);
   } else {
     ctx.session.walletAddress = walletAddress || '';
+    ctx.session.walletAdded = true;
     await createWalletSuccess(conversation, ctx);
   }
 }
@@ -156,6 +135,20 @@ testMenu
     } else {
       for (const menu of dynamicMenu.filter(menu => menu.type === MenuType.Buy)) {
         range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
+      }
+    }
+    return range;
+  })
+  .dynamic((ctx) => {
+    const range = new MenuRange<MyContext>();
+    if (ctx.session.walletAdded) {
+      for (const menu of dynamicMenu2) {
+        if (menu.id === 'walletSettings') {
+          const menuText = `⚙️ ${ctx.session.walletName}`;
+          range.text(menuText, (ctx) => ctx.reply(`You pressed wallet setting menu.`));
+        } else {
+          range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
+        }
       }
     }
     return range;
