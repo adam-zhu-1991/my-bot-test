@@ -118,7 +118,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
   const { walletAddress, success } = await checkAddress(conversation, ctx);
   if (!success) {
-    await checkAddress(conversation, ctx);
+    await setAddress(conversation, ctx);
   } else {
     ctx.session.walletAddress = walletAddress || '';
     await createWalletSuccess(conversation, ctx);
@@ -140,7 +140,7 @@ bot.use(createConversation(createWallet));
 
 const testMenu = new Menu<MyContext>('test-menu');
 testMenu
-  .text("Add", async (ctx) => {
+  .text("Add Wallet", async (ctx) => {
     await ctx.conversation.enter("createWallet");
   })
   .text("Switch", (ctx) => {
