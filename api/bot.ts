@@ -115,8 +115,9 @@ async function setWalletAddress(conversation: MyConversation, ctx: MyContext) {
   const { walletAddress, success } = await checkWalletAddress(conversation, ctx);
   if (!success) {
     await checkWalletAddress(conversation, ctx);
+  } else {
+    ctx.session.walletAddress = walletAddress || '';
   }
-  ctx.session.walletAddress = walletAddress || '';
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
