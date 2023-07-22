@@ -54,6 +54,7 @@ type MyContext = Context & SessionFlavor<SessionData>
 const dynamicMenu: MenuItem[] = [
   { id: 'buy001ETH', text: 'Buy 0.01 ETH', type: MenuType.Buy },
   { id: 'buy005ETH', text: 'Buy 0.05 ETH', type: MenuType.Buy },
+  { id: 'sellAllETH', text: 'Sell All ETH', type: MenuType.Sell },
   { id: 'sell001ETH', text: 'Sell 0.01 ETH', type: MenuType.Sell },
   { id: 'sell005ETH', text: 'Sell 0.05 ETH', type: MenuType.Sell },
 ]
