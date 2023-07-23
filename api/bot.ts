@@ -74,7 +74,6 @@ async function checkName(conversation: MyConversation, ctx: MyContext) {
 
 async function setName(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
-  // ctx.session.orginalMsgId = message.message_id;
   const { walletName, success } = await checkName(conversation, ctx);
   if (success) {
     ctx.session.walletName = walletName || '';
