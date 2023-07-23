@@ -146,8 +146,8 @@ testMenu
 bot.use(testMenu);
 
 bot.command("start", async (ctx) => {
-  const message = await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
-  ctx.session.orginalMsgId = message.message_id;
+  await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
+  ctx.session.orginalMsgId = Number(ctx.message?.message_id);
 });
 
 export default webhookCallback(bot, 'http')
