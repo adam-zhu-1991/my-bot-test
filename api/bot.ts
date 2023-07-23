@@ -137,10 +137,6 @@ testMenu
         range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
       }
     }
-    return range;
-  })
-  .dynamic((ctx) => {
-    const range = new MenuRange<MyContext>();
     if (ctx.session.walletAdded) {
       for (const menu of dynamicMenu2) {
         if (menu.id === 'walletSettings') {
