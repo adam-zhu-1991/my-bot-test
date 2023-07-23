@@ -73,7 +73,8 @@ async function checkName(conversation: MyConversation, ctx: MyContext) {
 }
 
 async function setName(conversation: MyConversation, ctx: MyContext) {
-  await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
+  const message = await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
+  ctx.session.orginalMsgId = message.message_id;
   const { walletName, success } = await checkName(conversation, ctx);
   if (success) {
     ctx.session.walletName = walletName || '';
@@ -113,7 +114,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
-    Number(ctx.message?.message_id),
+    Number(ctx.session.orginalMsgId),
     { reply_markup: testMenu },
   );
 }
@@ -128,7 +129,6 @@ const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add Wallet", async (ctx) => {
     await ctx.conversation.enter("createWallet");
-    ctx.session.orginalMsgId = ctx.message?.message_id || 1;
   })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
