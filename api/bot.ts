@@ -62,7 +62,6 @@ bot.use(conversations());
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
 async function setName(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
-  // await conversation.waitFor(":text");
   const walletName = await conversation.form.text();
   const isLegal = nameRegExp.test(walletName);
   if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
@@ -76,7 +75,6 @@ async function setName(conversation: MyConversation, ctx: MyContext) {
 const addressRegExp = new RegExp(/^0x[a-fA-F0-9]{40}$/);
 async function setAddress(conversation: MyConversation, ctx: MyContext) {
   await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
-  // await conversation.waitFor(":text");
   const walletAddress = await conversation.form.text();
   const isLegal = addressRegExp.test(walletAddress);
   if (walletAddress.length === 0 || walletAddress.length !== 42 || !isLegal) {
@@ -93,7 +91,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   const message = `<strong>✅Added ARB Wallet(💳${ctx.session.walletName})</strong>\n<i>${ctx.session.walletAddress}</i>`;
   await ctx.reply(message, { parse_mode: "HTML" });
 
-  await conversation.run(testMenu);
+  // await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
     Number(ctx.session.orginalMsgId),
