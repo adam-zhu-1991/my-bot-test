@@ -101,12 +101,6 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
     ctx.session.walletAddress = walletAddress || '';
     ctx.session.walletAdded = true;
     await createWalletSuccess(conversation, ctx);
-
-    await ctx.api.editMessageReplyMarkup(
-      Number(ctx.senderChat?.id),
-      Number(ctx.message?.forward_from_message_id),
-      { reply_markup: testMenu },
-    );
   }
 }
 
@@ -115,6 +109,12 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await ctx.reply(message, {
     parse_mode: "HTML"
   });
+  await conversation.run(testMenu);
+  await ctx.api.editMessageReplyMarkup(
+    Number(ctx.senderChat?.id),
+    Number(ctx.message?.forward_from_message_id),
+    { reply_markup: testMenu },
+  );
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
