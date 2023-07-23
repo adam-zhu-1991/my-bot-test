@@ -27,6 +27,7 @@ interface SessionData {
   walletName: String,
   walletAddress: String,
   walletAdded: Boolean,
+  orginalMsgId: Number,
 };
 
 type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor & MenuFlavor;
@@ -52,7 +53,7 @@ const bot = new Bot<MyContext>(token);
 bot.use(
   session({
     initial(): SessionData {
-      return { isSell: false, walletName: '', walletAddress: '', walletAdded: false }
+      return { isSell: false, walletName: '', walletAddress: '', walletAdded: false, orginalMsgId: 0 }
     },
   })
 );
@@ -64,7 +65,6 @@ let orginalMsgId:number;
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
 async function checkName(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
-  orginalMsgId = msg.message_id;
   const walletName = msg.text;
   const isLegal = nameRegExp.test(walletName);
   if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
@@ -115,7 +115,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
-    orginalMsgId,
+    Number(ctx.session.orginalMsgId),
     { reply_markup: testMenu },
   );
 }
@@ -130,6 +130,7 @@ const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add Wallet", async (ctx) => {
     await ctx.conversation.enter("createWallet");
+    ctx.session.orginalMsgId = ctx.message?.message_id || 1;
   })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
