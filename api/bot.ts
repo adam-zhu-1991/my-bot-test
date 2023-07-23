@@ -91,6 +91,18 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   const message = `<strong>✅Added ARB Wallet(💳${ctx.session.walletName})</strong>\n<i>${ctx.session.walletAddress}</i>`;
   await ctx.reply(message, { parse_mode: "HTML" });
 
+  const range = new MenuRange<MyContext>();
+  if (ctx.session.walletAdded) {
+    for (const menu of dynamicMenu2) {
+      if (menu.id === 'walletSettings') {
+        const menuText = `⚙️ ${ctx.session.walletName}`;
+        range.text(menuText, (ctx) => ctx.reply(`You pressed wallet setting menu.`));
+      } else {
+        range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
+      }
+    }
+  }
+  testMenu.addRange(range);
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
@@ -146,8 +158,8 @@ testMenu
 bot.use(testMenu);
 
 bot.command("start", async (ctx) => {
-  await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
-  ctx.session.orginalMsgId = Number(ctx.message?.message_id);
+  const message = await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
+  ctx.session.orginalMsgId = message.message_id;
 });
 
 export default webhookCallback(bot, 'http')
