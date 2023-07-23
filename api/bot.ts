@@ -116,6 +116,8 @@ async function createWallet(conversation: MyConversation, ctx: MyContext) {
   await setName(conversation, ctx);
 }
 
+bot.use(createConversation(createWallet));
+
 const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add Wallet", async (ctx) => {
@@ -150,7 +152,6 @@ testMenu
   });
 
 bot.use(testMenu);
-bot.use(createConversation(createWallet));
 
 bot.command("start", async (ctx) => {
   // send menu
