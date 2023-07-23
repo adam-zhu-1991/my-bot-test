@@ -60,8 +60,6 @@ bot.use(
 
 bot.use(conversations());
 
-let orginalMsgId:number;
-
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
 async function checkName(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
@@ -115,7 +113,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
-    Number(ctx.session.orginalMsgId),
+    Number(ctx.message?.message_id),
     { reply_markup: testMenu },
   );
 }
