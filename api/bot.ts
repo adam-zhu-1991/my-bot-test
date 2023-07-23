@@ -103,7 +103,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
     await createWalletSuccess(conversation, ctx);
 
     await ctx.api.editMessageReplyMarkup(
-      ctx.senderChat!.id,
+      Number(ctx.senderChat?.id),
       Number(ctx.message?.forward_from_message_id),
       { reply_markup: testMenu },
     );
