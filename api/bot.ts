@@ -101,7 +101,12 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
     ctx.session.walletAddress = walletAddress || '';
     ctx.session.walletAdded = true;
     await createWalletSuccess(conversation, ctx);
-    ctx.menu.update();
+
+    await ctx.api.editMessageReplyMarkup(
+      ctx.senderChat!.id,
+      Number(ctx.message?.forward_from_message_id),
+      { reply_markup: testMenu },
+    );
   }
 }
 
