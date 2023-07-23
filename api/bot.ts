@@ -62,8 +62,8 @@ bot.use(conversations());
 
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
 async function checkName(conversation: MyConversation, ctx: MyContext) {
-  const { msg } = await conversation.waitFor(":text");
-  const walletName = msg.text;
+  await conversation.waitFor(":text");
+  const walletName = await conversation.form.text();
   const isLegal = nameRegExp.test(walletName);
   if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
     await ctx.reply("This is not a valid wallet name, Name must be alphanumeric, 8 letters max.");
@@ -84,8 +84,8 @@ async function setName(conversation: MyConversation, ctx: MyContext) {
 
 const addressRegExp = new RegExp(/^0x[a-fA-F0-9]{40}$/);
 async function checkAddress(conversation: MyConversation, ctx: MyContext) {
-  const { msg } = await conversation.waitFor(":text");
-  const walletAddress = msg.text;
+  await conversation.waitFor(":text");
+  const walletAddress = await conversation.form.text();
   const isLegal = addressRegExp.test(walletAddress);
   if (walletAddress.length === 0 || walletAddress.length !== 42 || !isLegal) {
     await ctx.reply("This is not a valid wallet address, Please try again.");
