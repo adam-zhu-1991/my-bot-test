@@ -47,7 +47,6 @@ const dynamicMenu2: MenuItem[] = [
   { id: 'walletDelete', text: '❌', type: MenuType.Unspecified },
 ];
 
-// create a bot
 const bot = new Bot<MyContext>(token);
 
 bot.use(
@@ -61,42 +60,27 @@ bot.use(
 bot.use(conversations());
 
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
-async function checkName(conversation: MyConversation, ctx: MyContext) {
+async function setName(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
   await conversation.waitFor(":text");
   const walletName = await conversation.form.text();
   const isLegal = nameRegExp.test(walletName);
   if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
     await ctx.reply("This is not a valid wallet name, Name must be alphanumeric, 8 letters max.");
-    return { success: false };
-  }
-  return { walletName, success: true };
-}
-
-async function setName(conversation: MyConversation, ctx: MyContext) {
-  await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
-  const { walletName, success } = await checkName(conversation, ctx);
-  if (success) {
+  } else {
     ctx.session.walletName = walletName || '';
     await setAddress(conversation, ctx);
   }
 }
 
 const addressRegExp = new RegExp(/^0x[a-fA-F0-9]{40}$/);
-async function checkAddress(conversation: MyConversation, ctx: MyContext) {
+async function setAddress(conversation: MyConversation, ctx: MyContext) {
+  await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
   await conversation.waitFor(":text");
   const walletAddress = await conversation.form.text();
   const isLegal = addressRegExp.test(walletAddress);
   if (walletAddress.length === 0 || walletAddress.length !== 42 || !isLegal) {
     await ctx.reply("This is not a valid wallet address, Please try again.");
-    return { success: false };
-  }
-  return { walletAddress, success: true };
-}
-
-async function setAddress(conversation: MyConversation, ctx: MyContext) {
-  await ctx.reply("Reply to this message with the desired wallet address you'd like to copy trades from.");
-  const { walletAddress, success } = await checkAddress(conversation, ctx);
-  if (!success) {
     await setAddress(conversation, ctx);
   } else {
     ctx.session.walletAddress = walletAddress || '';
@@ -107,9 +91,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
 
 async function createWalletSuccess(conversation: MyConversation, ctx: MyContext) {
   const message = `<strong>✅Added ARB Wallet(💳${ctx.session.walletName})</strong>\n<i>${ctx.session.walletAddress}</i>`;
-  await ctx.reply(message, {
-    parse_mode: "HTML"
-  });
+  await ctx.reply(message, { parse_mode: "HTML" });
 
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
@@ -165,7 +147,6 @@ testMenu
 bot.use(testMenu);
 
 bot.command("start", async (ctx) => {
-  // send menu
   const message = await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
   ctx.session.orginalMsgId = message.message_id;
 });
