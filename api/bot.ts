@@ -111,7 +111,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   });
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
-    Number(ctx.chat?.id),
+    Number(ctx.senderChat?.id),
     Number(ctx.message?.forward_from_message_id),
     { reply_markup: testMenu },
   );
