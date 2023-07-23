@@ -112,13 +112,12 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
     parse_mode: "HTML"
   });
 
-  bot.api.sendMessage(Number(ctx.chat?.id), '', { reply_markup: testMenu });
-  // await conversation.run(testMenu);
-  // await ctx.api.editMessageReplyMarkup(
-  //   Number(ctx.chat?.id),
-  //   Number(ctx.session.orginalMsgId),
-  //   { reply_markup: testMenu },
-  // );
+  await conversation.run(testMenu);
+  await ctx.api.editMessageReplyMarkup(
+    Number(ctx.chat?.id),
+    Number(ctx.session.orginalMsgId),
+    { reply_markup: testMenu },
+  );
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
