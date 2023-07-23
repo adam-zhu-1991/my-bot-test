@@ -104,7 +104,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
   }
 }
 
-let orginalMsgId:number;
+// let orginalMsgId:number;
 
 async function createWalletSuccess(conversation: MyConversation, ctx: MyContext) {
   const message = `<strong>✅Added ARB Wallet(💳${ctx.session.walletName})</strong>\n<i>${ctx.session.walletAddress}</i>`;
@@ -114,7 +114,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
-    orginalMsgId,
+    Number(ctx.inlineMessageId),
     { reply_markup: testMenu },
   );
 }
@@ -129,7 +129,7 @@ const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add Wallet", async (ctx) => {
     await ctx.conversation.enter("createWallet");
-    orginalMsgId = Number(ctx.message?.message_id);
+    // orginalMsgId = Number(ctx.message?.message_id);
   })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
