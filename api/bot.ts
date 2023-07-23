@@ -1,5 +1,5 @@
-import { Bot, Context, session, SessionFlavor, webhookCallback } from "grammy";
-import { Menu, MenuRange } from "@grammyjs/menu";
+import { Bot, Context, session, SessionFlavor, webhookCallback, Filter } from "grammy";
+import { Menu, MenuRange, MenuFlavor } from "@grammyjs/menu";
 import {
   type Conversation,
   type ConversationFlavor,
@@ -29,7 +29,7 @@ interface SessionData {
   walletAdded: Boolean,
 };
 
-type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor;
+type MyContext = Context & SessionFlavor<SessionData> & MenuFlavor & ConversationFlavor;
 type MyConversation = Conversation<MyContext>;
 
 const dynamicMenu: MenuItem[] = [
@@ -100,6 +100,7 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
   } else {
     ctx.session.walletAddress = walletAddress || '';
     ctx.session.walletAdded = true;
+    ctx.menu.update();
     await createWalletSuccess(conversation, ctx);
   }
 }
@@ -114,6 +115,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
   await setName(conversation, ctx);
 }
+
 
 bot.use(createConversation(createWallet));
 
@@ -149,6 +151,7 @@ testMenu
     }
     return range;
   });
+
 
 bot.use(testMenu);
 bot.command("start", async (ctx) => {
