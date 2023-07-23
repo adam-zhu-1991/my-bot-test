@@ -91,12 +91,13 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   const message = `<strong>✅Added ARB Wallet(💳${ctx.session.walletName})</strong>\n<i>${ctx.session.walletAddress}</i>`;
   await ctx.reply(message, { parse_mode: "HTML" });
 
-  // await conversation.run(testMenu);
+  await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
     Number(ctx.session.orginalMsgId),
     { reply_markup: testMenu },
   );
+  ctx.menu.update();
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
