@@ -113,7 +113,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   // console.log();
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
-    Number(ctx.editedMessage?.reply_to_message?.forward_from_message_id),
+    Number(ctx.message?.reply_to_message?.message_id),
     { reply_markup: testMenu },
   );
 }
