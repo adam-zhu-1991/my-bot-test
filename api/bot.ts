@@ -169,8 +169,8 @@ testMenu
     //     }
     //   }
     // }
-    return range;
-  }).row();
+    return range.row();
+  });
 
 bot.use(testMenu);
 
