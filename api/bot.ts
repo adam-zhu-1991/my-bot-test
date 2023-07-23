@@ -157,7 +157,4 @@ bot.command("start", async (ctx) => {
   await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
 });
 
-
-bot.api.getUpdates()
-
 export default webhookCallback(bot, 'http')
