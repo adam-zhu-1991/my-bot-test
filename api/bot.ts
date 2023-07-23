@@ -59,9 +59,12 @@ bot.use(
 
 bot.use(conversations());
 
+let orginalMsgId:number;
+
 const nameRegExp = new RegExp(/^[a-zA-Z0-9]+$/);
 async function checkName(conversation: MyConversation, ctx: MyContext) {
   const { msg } = await conversation.waitFor(":text");
+  orginalMsgId = msg.message_id;
   const walletName = msg.text;
   const isLegal = nameRegExp.test(walletName);
   if (walletName.length === 0 || walletName.length > 8 || !isLegal) {
@@ -71,9 +74,7 @@ async function checkName(conversation: MyConversation, ctx: MyContext) {
   return { walletName, success: true };
 }
 
-let orginalMsgId:number;
 async function setName(conversation: MyConversation, ctx: MyContext) {
-  orginalMsgId = ctx.message?.message_id || 0;
   await ctx.reply("What would you like to name this copy trade wallet? 8 letters max, only numbers and letters.");
   const { walletName, success } = await checkName(conversation, ctx);
   if (success) {
