@@ -111,6 +111,20 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
   await ctx.reply(message, {
     parse_mode: "HTML"
   });
+
+  const range = new MenuRange<MyContext>();
+  if (ctx.session.walletAdded) {
+    for (const menu of dynamicMenu2) {
+      if (menu.id === 'walletSettings') {
+        const menuText = `⚙️ ${ctx.session.walletName}`;
+        range.text(menuText, (ctx) => ctx.reply(`You pressed wallet setting menu.`));
+      } else {
+        range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
+      }
+    }
+  }
+  testMenu.addRange(range);
+
   await conversation.run(testMenu);
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
@@ -146,17 +160,14 @@ testMenu
       }
     }
     if (ctx.session.walletAdded) {
-      range.text("Edit Wallet", async (ctx) => {
-        await ctx.conversation.enter("createWallet");
-      });
-      // for (const menu of dynamicMenu2) {
-      //   if (menu.id === 'walletSettings') {
-      //     const menuText = `⚙️ ${ctx.session.walletName}`;
-      //     range.text(menuText, (ctx) => ctx.reply(`You pressed wallet setting menu.`));
-      //   } else {
-      //     range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
-      //   }
-      // }
+      for (const menu of dynamicMenu2) {
+        if (menu.id === 'walletSettings') {
+          const menuText = `⚙️ ${ctx.session.walletName}`;
+          range.text(menuText, (ctx) => ctx.reply(`You pressed wallet setting menu.`));
+        } else {
+          range.text(menu.text.toString(), (ctx) => ctx.reply(`You pressed ${menu.text}.`));
+        }
+      }
     }
     return range;
   });
