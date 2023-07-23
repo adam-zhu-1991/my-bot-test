@@ -120,6 +120,7 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
 }
 
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
+  orginalMsgId = Number(ctx.message?.message_id);
   await setName(conversation, ctx);
 }
 
@@ -129,7 +130,6 @@ const testMenu = new Menu<MyContext>('test-menu');
 testMenu
   .text("Add Wallet", async (ctx) => {
     await ctx.conversation.enter("createWallet");
-    orginalMsgId = Number(ctx.message?.message_id);
   })
   .text("Switch", (ctx) => {
     ctx.session.isSell = !ctx.session.isSell;
