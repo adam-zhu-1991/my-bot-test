@@ -110,7 +110,6 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
     parse_mode: "HTML"
   });
   await conversation.run(testMenu);
-  // console.log();
   await ctx.api.editMessageReplyMarkup(
     Number(ctx.chat?.id),
     Number(ctx.message?.reply_to_message?.message_id),
