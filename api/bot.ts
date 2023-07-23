@@ -29,7 +29,7 @@ interface SessionData {
   walletAdded: Boolean,
 };
 
-type MyContext = Context & SessionFlavor<SessionData> & MenuFlavor & ConversationFlavor;
+type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor & MenuFlavor;
 type MyConversation = Conversation<MyContext>;
 
 const dynamicMenu: MenuItem[] = [
@@ -100,8 +100,8 @@ async function setAddress(conversation: MyConversation, ctx: MyContext) {
   } else {
     ctx.session.walletAddress = walletAddress || '';
     ctx.session.walletAdded = true;
-    ctx.menu.update();
     await createWalletSuccess(conversation, ctx);
+    ctx.menu.update();
   }
 }
 
@@ -115,7 +115,6 @@ async function createWalletSuccess(conversation: MyConversation, ctx: MyContext)
 async function createWallet(conversation: MyConversation, ctx: MyContext) {
   await setName(conversation, ctx);
 }
-
 
 bot.use(createConversation(createWallet));
 
@@ -152,11 +151,13 @@ testMenu
     return range;
   });
 
-
 bot.use(testMenu);
 bot.command("start", async (ctx) => {
   // send menu
   await ctx.reply("This is my first telegram bot:", { reply_markup: testMenu });
 });
+
+
+bot.api.getUpdates()
 
 export default webhookCallback(bot, 'http')
